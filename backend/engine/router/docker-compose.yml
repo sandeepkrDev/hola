@@ -1,0 +1,75 @@
+version: "3.9"
+services:
+  auth:
+    container_name: auth
+    restart: always
+    build: /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/auth
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/auth:/server
+      - /server/node_modules
+    env_file:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/auth/.env
+  engine:
+    container_name: engine
+    restart: always
+    build: /Users/sandeepkumar/code/work/application/gluestack/test/backend/engine
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/engine:/server
+      - /server/node_modules
+    env_file:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/engine/.env
+  nginx:
+    container_name: nginx
+    restart: always
+    build: /Users/sandeepkumar/code/work/application/gluestack/test/backend/engine/router
+    ports:
+      - 9090:80
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/engine/router/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      graphql:
+        condition: service_healthy
+  graphql:
+    container_name: graphql
+    restart: always
+    image: hasura/graphql-engine:v2.16.1
+    ports:
+      - 8080:8080
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/graphql:/hasura
+    env_file:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/graphql/.env
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+      interval: 5s
+      timeout: 2s
+      retries: 20
+  sender:
+    container_name: sender
+    restart: always
+    build: /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/sender
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/sender:/server
+      - /server/node_modules
+    env_file:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/sender/.env
+  email:
+    container_name: email
+    restart: always
+    build: /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/email
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/email:/server
+      - /server/node_modules
+    env_file:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/email/.env
+  storage:
+    container_name: storage
+    restart: always
+    build: /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/storage
+    volumes:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/storage:/server
+      - /server/node_modules
+    env_file:
+      - /Users/sandeepkumar/code/work/application/gluestack/test/backend/services/storage/.env

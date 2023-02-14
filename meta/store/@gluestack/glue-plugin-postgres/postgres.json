@@ -1,0 +1,13 @@
+{
+  "status": "down",
+  "port_number": 5433,
+  "container_id": null,
+  "db_config": {
+    "external": true,
+    "db_name": "minio",
+    "username": "sandeepkumar",
+    "password": "password",
+    "db_host": "host.docker.internal",
+    "db_port": "5432"
+  }
+}

@@ -1,0 +1,3 @@
+
+CREATE DATABASE IF NOT EXISTS `minio`;
+GRANT ALL PRIVILEGES ON DATABASE `minio` TO `sandeepkumar`;
